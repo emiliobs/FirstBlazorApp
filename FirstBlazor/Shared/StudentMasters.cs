@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FirstBlazor.Server
+namespace FirstBlazor.Shared
 {
     public partial class StudentMasters
     {

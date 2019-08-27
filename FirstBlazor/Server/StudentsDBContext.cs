@@ -1,4 +1,5 @@
 ﻿using System;
+using FirstBlazor.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 

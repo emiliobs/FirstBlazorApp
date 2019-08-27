@@ -1,0 +1,149 @@
+﻿@page "/Students"
+@using FirstBlazor.Shared
+
+<h1>Asp.Net Core Blazor CRUD for Students</h1>
+<hr />
+
+<table width="100%" style="background-color:#05163d; color:honeydew">
+    <tr>
+        <td width="20"></td>
+        <td>
+            <h2>Add New Atudent Details</h2>
+        </td>
+        <td></td>
+        <td align="right">
+            <button class="btn btn-info" @onclick="@AddNewSttudent">Add New Student</button>
+        </td>
+        <td width="10"></td>       
+    </tr>
+    <tr>
+        <td colspan="2"></td>
+    </tr>
+</table>
+<hr />
+<form>
+    <table class="form-group">
+        <tr>
+            <td><label for="Id" class="control-label">Student Id</label></td>
+            <td><input type="text" class="form-control" @bind="@student.StdId" readonly /></td>
+            <td width="20"></td>
+            <td><label for="Name" class="control-label">Student Name</label></td>
+            <td><input type="text" class="form-control" @bind="@student.StdName" /></td>
+        </tr>
+        <tr>
+            <td><label for="Email" class="control-label">Email</label></td>
+            <td><input type="text" class="form-control" @bind="@student.Email" /></td>
+            <td width="20"></td>
+            <td><label for="Phone" class="control-label">Phone</label></td>
+            <td><input type="text" class="form-control" @bind="@student.Phone" /></td>
+        </tr>
+        <tr>
+            <td><label for="Address" class="control-label">Address</label></td>
+            <td><input type="text" class="form-control" @bind="@student.Address" /></td>
+            <td width="20"></td>
+            <td></td>
+            <td>
+                <button type="submit" class="btn btn-success" @onclick="@AddStudent" style="width:220px;">Save</button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<hr />
+
+<table width="100%" style="background-color:#0a2464; color:honeydew">
+    <tr>
+        <td width="20"></td>
+        <td>
+            <h2>Studet Details</h2>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"></td>
+    </tr>
+</table>
+
+@if (StudentMasters == null)
+{
+    <p><em>Loading.....</em></p>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student Id</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in StudentMasters)
+        {
+            <tr>
+                <td>@student.StdId</td>
+                <td>@student.StdName</td>
+                <td>@student.Email</td>
+                <td>@student.Phone</td>
+                <td>@student.Address</td>
+                <td><button class="btn btn-primary" @onclick="@(() => EditStudet(student.StdId))" style="width:110px;">Edit</button></td>
+                <td><button class="btn btn-danger" @onclick="@(()=> DeleteStudent(student.StdId))">Delete</button></td>
+            </tr>
+    }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    StudentMasters[] StudentMasters;
+
+    StudentMasters student = new StudentMasters();
+
+    string ids = "0";
+    bool showAddrow = false;
+
+    protected  override async Task OnInitializedAsync()
+    {
+        StudentMasters = await Http.GetJsonAsync<StudentMasters[]>("api/Students");
+    }
+
+    void AddNewSttudent()
+    {
+        student = new StudentMasters();
+    }
+
+    async Task AddStudent()
+    {
+        if (student.StdId == 0)
+        {
+            await Http.PostJsonAsync("api/Students", student);
+        }
+        else
+        {
+            await Http.PutJsonAsync($"api/Students/{student.StdId}", student);
+        }
+
+        student = new StudentMasters();
+        StudentMasters = await Http.GetJsonAsync<StudentMasters[]>("api/Students");
+    }
+
+    async Task EditStudet(int id)
+    {
+        ids = id.ToString();
+        student = await Http.GetJsonAsync<StudentMasters>($"api/Students/{id}");
+    }
+
+
+    async Task DeleteStudent(int id)
+    {
+        ids = id.ToString();
+        await Http.DeleteAsync($"api/Students/{id}");
+
+        StudentMasters = await Http.GetJsonAsync<StudentMasters[]>("/api/Students");
+    }
+
+
+}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FirstBlazor.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +17,9 @@ namespace FirstBlazor.Server.Controllers
 
 
         [HttpGet]
-        public IEnumerable<StudentMasters> GetStudentMasters()
+         public async Task<ActionResult<List<StudentMasters>>> GetStudentMasters()
         {
-            return _context.StudentMasters;
+            return await _context.StudentMasters.ToListAsync();
         }
 
         [HttpGet("{id}")]
